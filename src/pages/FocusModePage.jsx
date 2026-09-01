@@ -65,6 +65,7 @@ export const FocusModePage = () => {
   const [completedSessionData, setCompletedSessionData] = useState(null);
 
   const timerRef = useRef(null);
+  const elapsedRef = useRef(0);
 
   const activeTask = tasks.find((t) => t.id === selectedTaskId);
 
@@ -73,6 +74,8 @@ export const FocusModePage = () => {
     if (sessionState === 'idle') {
       setSelectedDurationMinutes(mins);
       setSecondsRemaining(mins * 60);
+      elapsedRef.current = 0;
+      setElapsedSeconds(0);
     }
   };
 
@@ -80,15 +83,9 @@ export const FocusModePage = () => {
   useEffect(() => {
     if (sessionState === 'running') {
       timerRef.current = setInterval(() => {
-        setSecondsRemaining((prev) => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current);
-            handleEndSession(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-        setElapsedSeconds((prev) => prev + 1);
+        elapsedRef.current += 1;
+        setElapsedSeconds(elapsedRef.current);
+        setSecondsRemaining((prev) => Math.max(0, prev - 1));
       }, 1000);
     } else {
       clearInterval(timerRef.current);
@@ -97,7 +94,18 @@ export const FocusModePage = () => {
     return () => clearInterval(timerRef.current);
   }, [sessionState]);
 
+  // Natural finish: the countdown reached zero while the session was running
+  useEffect(() => {
+    if (sessionState === 'running' && secondsRemaining === 0) {
+      handleEndSession(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionState, secondsRemaining]);
+
   const handleStartSession = () => {
+    elapsedRef.current = 0;
+    setElapsedSeconds(0);
+    setSecondsRemaining(selectedDurationMinutes * 60);
     setSessionState('running');
     setSessionStartTime(new Date().toISOString());
   };
@@ -114,7 +122,8 @@ export const FocusModePage = () => {
     clearInterval(timerRef.current);
     setSessionState('ended');
 
-    const durationMinutes = Math.max(1, Math.round(elapsedSeconds / 60));
+    const elapsed = elapsedRef.current;
+    const durationMinutes = Math.max(1, Math.round(elapsed / 60));
     const now = new Date().toISOString();
 
     const logged = saveFocusSession({
@@ -123,14 +132,14 @@ export const FocusModePage = () => {
       startTime: sessionStartTime || now,
       endTime: now,
       durationMinutes,
-      durationSeconds: elapsedSeconds,
+      durationSeconds: elapsed,
       status: 'completed',
       date: now.split('T')[0]
     });
 
     setCompletedSessionData({
       logged,
-      elapsedSeconds,
+      elapsedSeconds: elapsed,
       durationMinutes,
       task: activeTask,
       isNaturalFinish
@@ -150,6 +159,7 @@ export const FocusModePage = () => {
   const handleContinueWorking = () => {
     setShowCompletionModal(false);
     setSessionState('idle');
+    elapsedRef.current = 0;
     setElapsedSeconds(0);
     setSecondsRemaining(selectedDurationMinutes * 60);
   };

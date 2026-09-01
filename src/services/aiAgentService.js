@@ -743,7 +743,9 @@ export const evaluateProjectRisks = (project, tasks = [], milestones = [], overd
       impact: 'High',
       severity: 'Critical',
       reason: `Tasks [${overdueTasks.map(t => t.name).slice(0, 2).join(', ')}] have passed their scheduled completion date.`,
-      recommendedAction: 'Reschedule deadlines or break overdue tasks into smaller 48-hour sprints.'
+      description: `Tasks [${overdueTasks.map(t => t.name).slice(0, 2).join(', ')}] have passed their scheduled completion date.`,
+      recommendedAction: 'Reschedule deadlines or break overdue tasks into smaller 48-hour sprints.',
+      mitigation: 'Reschedule deadlines or break overdue tasks into smaller 48-hour sprints.'
     });
   }
 
@@ -759,7 +761,9 @@ export const evaluateProjectRisks = (project, tasks = [], milestones = [], overd
           impact: 'High',
           severity: 'High',
           reason: `Milestone deadline is ${m.endDate}. Ensure deliverables are prepared for faculty review.`,
-          recommendedAction: 'Dedicate today’s focus sessions exclusively to milestone deliverables.'
+          description: `Milestone deadline is ${m.endDate}. Ensure deliverables are prepared for faculty review.`,
+          recommendedAction: 'Dedicate today’s focus sessions exclusively to milestone deliverables.',
+          mitigation: 'Dedicate today’s focus sessions exclusively to milestone deliverables.'
         });
       }
     }
@@ -772,9 +776,11 @@ export const evaluateProjectRisks = (project, tasks = [], milestones = [], overd
       name: 'Low Weekly Focus Work (<20 mins logged)',
       probability: 'Medium',
       impact: 'Medium',
-      severity: 'Moderate',
+      severity: 'Medium',
       reason: 'Consistency momentum is low this week, which increases the risk of pre-deadline cramming.',
-      recommendedAction: 'Launch a 25-minute Pomodoro session in Focus Mode today.'
+      description: 'Consistency momentum is low this week, which increases the risk of pre-deadline cramming.',
+      recommendedAction: 'Launch a 25-minute Pomodoro session in Focus Mode today.',
+      mitigation: 'Launch a 25-minute Pomodoro session in Focus Mode today.'
     });
   }
 
@@ -785,9 +791,11 @@ export const evaluateProjectRisks = (project, tasks = [], milestones = [], overd
       name: 'Computational Resource Saturation during Extended Runs',
       probability: 'Medium',
       impact: 'Medium',
-      severity: 'Moderate',
+      severity: 'Medium',
       reason: 'Model quantization or memory allocation may bottleneck without half-precision optimizations.',
-      recommendedAction: 'Profile GPU/CPU memory bandwidth during Sprint 4.'
+      description: 'Model quantization or memory allocation may bottleneck without half-precision optimizations.',
+      recommendedAction: 'Profile GPU/CPU memory bandwidth during Sprint 4.',
+      mitigation: 'Profile GPU/CPU memory bandwidth during Sprint 4.'
     });
   }
 

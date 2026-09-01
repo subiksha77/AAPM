@@ -282,12 +282,6 @@ export const ProjectProvider = ({ children }) => {
     showToast('Project and all associated data cleared.', 'info');
   };
 
-  const handleResetToRealistic = () => {
-    storage.resetToRealisticData();
-    refreshAllData();
-    showToast('Restored authentic project data: Autonomous Drone Detection System', 'success');
-  };
-
   // Objectives
   const handleSaveObjectives = (newObjectives) => {
     storage.saveObjectives(newObjectives);
@@ -470,7 +464,6 @@ export const ProjectProvider = ({ children }) => {
     createProject: handleCreateProject,
     updateProject: handleUpdateProject,
     deleteProject: handleDeleteProject,
-    resetToRealisticProject: handleResetToRealistic,
     saveObjectives: handleSaveObjectives,
     addTask: handleAddTask,
     updateTask: handleUpdateTask,

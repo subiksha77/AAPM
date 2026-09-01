@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FileText,
@@ -53,6 +53,19 @@ export const PlanningPage = () => {
     dueDate: '',
     status: 'Pending'
   });
+
+  // Keep local editing state in sync with data loaded from storage by the context
+  useEffect(() => {
+    setLocalObjectives(objectives || []);
+  }, [objectives]);
+
+  useEffect(() => {
+    setInScope(planning.inScope || []);
+    setOutOfScope(planning.outOfScope || []);
+    setFuncReqs(planning.functionalRequirements || []);
+    setNonFuncReqs(planning.nonFunctionalRequirements || []);
+    setDeliverables(planning.deliverables || []);
+  }, [planning]);
 
   // Save all planning changes
   const handleSaveAll = () => {
